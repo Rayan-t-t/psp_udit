@@ -13,7 +13,7 @@ public class Episodio {
 
     //METODO :
     public void procesar(){
-        System.out.printf("Iniciando procesamineto de: " + this.titulo +" ...");
+        System.out.println("Iniciando procesamineto de: " + this.titulo +" ...");
         try{
             Thread.sleep(2000);//pausa la ejecucion en 2 seg=2000 milseg
         }catch(InterruptedException e){
@@ -22,4 +22,5 @@ public class Episodio {
         }
         System.out.println("Completado: "+ this.titulo );
     }
+
 }

@@ -1,13 +1,13 @@
 package org.example;
 import java.util.ArrayList;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+
 public class Main {
     public static void main(String[] args) {
 // toda la logica de  negocio tirada al Main
         //los diamantes <> obliga a que la lista solo acpete episodios
-        System.out.println("---  INICIANDO MULTIVERSO");
+   /*    System.out.println("---  INICIANDO MULTIVERSO");
         ArrayList<Episodio> catalogo = new ArrayList();
         catalogo.add(new Episodio("Diseño 2D", 40));
         catalogo.add(new Episodio("Animación",10));
@@ -22,6 +22,24 @@ public class Main {
         long fin = System.currentTimeMillis();
         long totalSegundos = ((fin-inicio)/1000);
 
-        System.out.println("Total de segundos: "+ totalSegundos+" segundos de bloqueos");
+        System.out.println("Total de segundos: "+ totalSegundos+" segundos de bloqueos");*/
+        //reto 02
+        Plataforma netflixUDIT = new Plataforma();
+        //añadimos el contenido limpiamente
+        netflixUDIT.agregar_episodio(new Episodio("Video 2", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 3", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 4", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 5", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 6", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 7", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 8", 30));
+        netflixUDIT.agregar_episodio(new Episodio("Video 9", 30));
+        long inicio = System.currentTimeMillis();
+        netflixUDIT.procesar_catalogo();
+        long fin = System.currentTimeMillis();
+        long total = (fin - inicio)/1000;
+        System.out.println("Total de segundos: "+ total+" segundos de bloqueos");
+
     }
 }
+
