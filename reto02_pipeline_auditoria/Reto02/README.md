@@ -75,7 +75,7 @@ Reto02/
 │               └── example/
 │                   ├── Main.java
 │                   └── process.java
-└── target/ (generado por Maven)
+└── target/ 
 ```
 
 ---
