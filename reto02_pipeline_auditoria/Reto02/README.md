@@ -62,21 +62,37 @@ El flujo es el siguiente:
 
 ---
 
-## Estructura del proyecto
+## 📺 Qué es esta app
 
-```text
-Reto02/
-├── pom.xml
-├── README.md
-├── src/
-│   └── main/
-│       └── java/
-│           └── org/
-│               └── example/
-│                   ├── Main.java
-│                   └── process.java
-└── target/ 
+Un programa de consola que simula la primera fase de una auditoría de UDITversum. El programa:
+
+1. Lanza dos comprobaciones (`ping`) a la vez, cada una en su propio proceso del sistema operativo.
+2. Espera a que ambas terminen.
+3. Lee el código de salida de cada una.
+4. Según el resultado combinado, toma una decisión y abre una aplicación del sistema (Bloc de Notas o Calculadora).
+
 ```
+        ┌──────────────┐
+        │  Mi programa │
+        │   (Java)     │
+        └──────┬───────┘
+               │ start()          start()
+        ┌──────┴──────┐    ┌──────┴──────┐
+        ▼                         ▼
+  ┌───────────┐             ┌───────────┐
+  │  ping A   │             │  ping B   │   ← corren a la vez
+  └─────┬─────┘             └─────┬─────┘
+        │ waitFor()               │ waitFor()
+        └───────────┬─────────────┘
+                    ▼
+          ¿códigos de salida?
+                    │
+        ┌───────────┴───────────┐
+        ▼                       ▼
+   Bloc de Notas           Calculadora
+```
+
+![image](image.png)
 
 ---
 
@@ -145,14 +161,16 @@ En este caso, ambos procesos arrancan casi a la vez y el tiempo total se reduce 
 
 ---
 
-## Tabla de decisión
+## 🔢 Tabla de verdad de mi decisión
 
-| Ping A | Ping B | Resultado | Aplicación abierta |
-|---|---|---|---|
-| `0` | `0` | Ambos correctos | Bloc de Notas |
-| `0` | distinto de `0` | Uno falla | Calculadora |
-| distinto de `0` | `0` | Uno falla | Calculadora |
-| distinto de `0` | distinto de `0` | Ambos fallan | Calculadora |
+| Código ping A | Código ping B | ¿Ping A OK? | ¿Ping B OK? | Condición (`&&` / `\|\|`) | Aplicación que abro |
+|---|---|---|---|---|---|
+| 0 | 0 | Sí | Sí | `&&` | Bloc de Notas |
+| 0 | ≠ 0 | Sí | No | `&&` | Calculadora |
+| ≠ 0 | 0 | No | Sí | `&&` | Calculadora |
+| ≠ 0 | ≠ 0 | No | No | `&&` | Calculadora |
+
+**¿Cambiaría el resultado de alguna fila si cambiara `&&` por `||`?** Sí. Con `||`, la aplicación que se abre sería Bloc de Notas en cualquier caso en el que al menos uno de los dos pings tenga éxito. Por eso, con `||`, la fila `0 / ≠ 0` y `≠ 0 / 0` cambiarían de Calculadora a Bloc de Notas; la fila `0 / 0` seguiría siendo Bloc de Notas, y la fila `≠ 0 / ≠ 0` seguiría siendo Calculadora.
 
 La condición principal es:
 
