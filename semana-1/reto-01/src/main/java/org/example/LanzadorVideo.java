@@ -12,7 +12,7 @@ public class LanzadorVideo {
             // start() es el gatillo. pide al planificador del sistema opertaivo que cree el proceso
             Process process = pb.start();
             System.out.println("Proceso en ejecución. PID: " + process.pid());
-           
+
 
         }
     catch (IOException e) {
