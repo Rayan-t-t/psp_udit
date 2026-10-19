@@ -234,3 +234,36 @@ Es un ejemplo claro de multitarea y sincronización básica con `ProcessBuilder`
 ## Nota
 
 El proyecto está pensado como ejercicio académico de programación de servicios y procesos y funciona correctamente en entornos Windows con las herramientas del sistema disponibles.
+
+---
+
+## Reflexión sobre el patrón Retry
+
+### Mundo real: ¿qué sistemas profesionales utilizan el patrón Retry?
+
+El patrón **Retry** se utiliza en sistemas distribuidos para volver a intentar una operación cuando un fallo puede ser temporal, por ejemplo, un corte breve de red o una respuesta de servidor ocupado. Es habitual en:
+
+- **Pasarelas de pago**, para reintentar ciertas comunicaciones con el proveedor ante errores transitorios. En operaciones que podrían cobrarse más de una vez, se usan claves de idempotencia y controles para evitar duplicados.
+- **Servicios y SDK de AWS**, que pueden reintentar algunas llamadas a sus API cuando reciben errores temporales o se agota el tiempo de espera. El número de intentos y la estrategia dependen del servicio y de la configuración del cliente.
+- **Clientes HTTP, colas de mensajes y microservicios**, donde los reintentos suelen combinarse con esperas crecientes (*backoff*) y, a menudo, una variación aleatoria (*jitter*) para que muchos clientes no vuelvan a intentarlo exactamente al mismo tiempo.
+
+No conviene reintentar indiscriminadamente: se deben distinguir los errores temporales de los permanentes y aplicar la política adecuada a cada operación.
+
+### Reflexión sobre los tiempos: ¿por qué limitar los reintentos al auditar 50 servidores con problemas de conexión?
+
+Al comparar los tiempos medidos, se observa que cada espera por un proceso que no responde puede alargar la auditoría; si se ejecutan comprobaciones en paralelo, el tiempo total puede reducirse, pero las esperas y los reintentos siguen teniendo un coste. Si los 50 servidores tienen problemas de conexión, reintentar sin límite podría hacer que la auditoría tarde demasiado y mantenga procesos y recursos ocupados. Además, los intentos repetidos generan tráfico innecesario y pueden sobrecargar la red o los propios servidores, empeorando el problema.
+
+Por eso se establece un **máximo de intentos**, un **tiempo de espera** y, cuando procede, una pausa creciente entre intentos. Así se mantiene acotado el tiempo de auditoría, se evita insistir indefinidamente con servidores inaccesibles y se puede informar qué equipos no respondieron. Los reintentos deben reservarse para fallos probablemente temporales; si se agota el límite, se registra el fallo y se continúa con el siguiente servidor.
+
+## Ejemplos de automatización con procesos
+
+La coordinación de procesos y la comprobación de sus códigos de salida también se aplica a tareas automatizadas como estas:
+
+1. **Copias de seguridad programadas**
+   Lanzar herramientas como `robocopy`, `rsync` o `mysqldump`, comprobar que la copia terminó correctamente y, si falla, reintentar la operación o avisar.
+
+2. **Backup de bases de datos antes de una migración**
+   Ejecutar el comando de backup y continuar con el script de migración solo si el proceso termina con código de salida `0`. Si el backup falla, detener la secuencia para evitar perder datos.
+
+3. **Generación nocturna de informes batch**
+   Lanzar en paralelo varias consultas SQL —por ejemplo, con `sqlcmd` o `psql`— contra bases de datos regionales. Si una conexión falla, reintentar hasta tres veces. Ejecutar el generador de PDF y el envío por correo únicamente cuando todas las consultas terminen con código `0`. Si finalmente alguna falla, registrar el error en el log y disparar una alerta.

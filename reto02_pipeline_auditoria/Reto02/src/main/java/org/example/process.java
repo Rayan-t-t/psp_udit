@@ -10,7 +10,7 @@ public class process {
         System.out.println("iniciando ejecución paralela...");
 
         long inicioParalela = System.currentTimeMillis();
-        ArrayList<Process> processes = new ArrayList<Process>();
+        //ArrayList<Process> processes = new ArrayList<Process>();
 
             System.out.println("Bloqueando java para recojer resultados");
           /*  int intento=0;
@@ -50,7 +50,7 @@ public class process {
             pb1.waitFor();
             pb2.waitFor();
             while (pb1.exitValue() != 0) {
-                try2++;
+                try1++;
                 System.out.println("Intento B" + try2);
                 if (try1 == 3) {
                     break;
@@ -71,10 +71,10 @@ public class process {
             }
 
             if(try1==3 || try2==3){
-                Process note = new ProcessBuilder("notepad.exe").start();
+                Process note = new ProcessBuilder("calc.exe").start();
             }
             else {
-                Process calc = new ProcessBuilder("calc.exe").start();
+                Process calc = new ProcessBuilder("notepad.exe").start();
 
             }
         /*if(p3.exitValue() == 0 && p4.exitValue()==0  ){
